@@ -1,13 +1,20 @@
 import { NextResponse } from 'next/server'
+import { auth } from '@/lib/auth'
 import getDb from '@/lib/db'
 
 export async function GET() {
+  const session = await auth()
+  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
   const db = getDb()
-  const leads = db.prepare('SELECT * FROM leads ORDER BY created_at DESC').all()
-  return NextResponse.json(leads)
+  const result = await db.execute('SELECT * FROM leads ORDER BY created_at DESC')
+  return NextResponse.json(result.rows)
 }
 
 export async function POST(request) {
+  const session = await auth()
+  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
   const body = await request.json()
   const { name, email, phone, company, status } = body
 
@@ -19,11 +26,15 @@ export async function POST(request) {
   const safeStatus = validStatuses.includes(status) ? status : 'New'
 
   const db = getDb()
-  const stmt = db.prepare(
-    'INSERT INTO leads (name, email, phone, company, status) VALUES (?, ?, ?, ?, ?)'
-  )
-  const result = stmt.run(name, email, phone || null, company || null, safeStatus)
+  const result = await db.execute({
+    sql: 'INSERT INTO leads (name, email, phone, company, status) VALUES (?, ?, ?, ?, ?)',
+    args: [name, email, phone || null, company || null, safeStatus],
+  })
 
-  const lead = db.prepare('SELECT * FROM leads WHERE id = ?').get(result.lastInsertRowid)
-  return NextResponse.json(lead, { status: 201 })
+  const lead = await db.execute({
+    sql: 'SELECT * FROM leads WHERE id = ?',
+    args: [result.lastInsertRowid],
+  })
+
+  return NextResponse.json(lead.rows[0], { status: 201 })
 }
