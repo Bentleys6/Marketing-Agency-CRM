@@ -16,9 +16,10 @@ export async function POST(request) {
   const hashed = await bcrypt.hash(password, 12)
   const db = getDb()
   await db.execute({
-    sql: 'INSERT INTO users (name, email, password) VALUES (?, ?, ?)',
+    sql: `INSERT INTO users (name, email, password) VALUES (?, ?, ?)
+          ON CONFLICT(email) DO UPDATE SET name = excluded.name, password = excluded.password`,
     args: [name, email, hashed],
   })
 
-  return NextResponse.json({ ok: true, message: `User created: ${email}` })
+  return NextResponse.json({ ok: true, message: `User created/updated: ${email}` })
 }

@@ -7,8 +7,9 @@ const { auth } = NextAuth(authConfig)
 export default auth((req) => {
   const isLoggedIn = !!req.auth
   const isLoginPage = req.nextUrl.pathname === '/login'
+  const isSetupPage = req.nextUrl.pathname === '/setup'
 
-  if (!isLoggedIn && !isLoginPage) {
+  if (!isLoggedIn && !isLoginPage && !isSetupPage) {
     return NextResponse.redirect(new URL('/login', req.url))
   }
 
@@ -18,5 +19,5 @@ export default auth((req) => {
 })
 
 export const config = {
-  matcher: ['/((?!api/auth|_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/((?!api/auth|api/admin|_next/static|_next/image|favicon.ico).*)'],
 }
