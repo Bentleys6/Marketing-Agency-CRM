@@ -27,11 +27,13 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
-      const res = await signIn('credentials', {
-        email,
-        password,
-        redirect: false,
-      })
+      const timeout = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Request timed out, please try again.')), 12000)
+      )
+      const res = await Promise.race([
+        signIn('credentials', { email, password, redirect: false }),
+        timeout,
+      ])
 
       if (res?.ok) {
         router.push('/leads')
