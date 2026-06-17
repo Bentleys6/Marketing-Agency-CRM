@@ -79,16 +79,29 @@ export default function LeadsPage() {
             {leads.length} total lead{leads.length !== 1 ? 's' : ''}
           </p>
         </div>
-        <Link href="/leads/new" style={{
-          background: '#1e40af',
-          color: '#fff',
-          padding: '0.6rem 1.25rem',
-          borderRadius: '8px',
-          fontWeight: 600,
-          fontSize: '0.9rem',
-        }}>
-          + Add Lead
-        </Link>
+        <div style={{ display: 'flex', gap: '0.75rem' }}>
+          <Link href="/leads/import" style={{
+            background: '#fff',
+            color: '#1e40af',
+            border: '1px solid #1e40af',
+            padding: '0.6rem 1.25rem',
+            borderRadius: '8px',
+            fontWeight: 600,
+            fontSize: '0.9rem',
+          }}>
+            Import
+          </Link>
+          <Link href="/leads/new" style={{
+            background: '#1e40af',
+            color: '#fff',
+            padding: '0.6rem 1.25rem',
+            borderRadius: '8px',
+            fontWeight: 600,
+            fontSize: '0.9rem',
+          }}>
+            + Add Lead
+          </Link>
+        </div>
       </div>
 
       {loading ? (
