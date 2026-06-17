@@ -3,8 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-
-const STATUSES = ['New', 'Contacted', 'Qualified', 'Lost']
+import { STATUSES } from '@/lib/leadStatus'
 
 const inputStyle = {
   width: '100%',
@@ -27,7 +26,7 @@ const labelStyle = {
 
 export default function NewLeadPage() {
   const router = useRouter()
-  const [form, setForm] = useState({ name: '', email: '', phone: '', company: '', status: 'New', revenue: '' })
+  const [form, setForm] = useState({ name: '', email: '', phone: '', company: '', status: 'Uncalled', revenue: '', tag: '' })
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
 

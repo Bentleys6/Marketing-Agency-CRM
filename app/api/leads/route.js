@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import getDb from '@/lib/db'
+import { STATUSES } from '@/lib/leadStatus'
 
 export async function GET() {
   const session = await auth()
@@ -16,20 +17,19 @@ export async function POST(request) {
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const body = await request.json()
-  const { name, email, phone, company, status, revenue } = body
+  const { name, email, phone, company, status, revenue, tag } = body
 
   if (!name || !email) {
     return NextResponse.json({ error: 'Name and email are required' }, { status: 400 })
   }
 
-  const validStatuses = ['New', 'Contacted', 'Qualified', 'Lost']
-  const safeStatus = validStatuses.includes(status) ? status : 'New'
+  const safeStatus = STATUSES.includes(status) ? status : 'Uncalled'
   const safeRevenue = Number(revenue) || 0
 
   const db = getDb()
   const result = await db.execute({
-    sql: 'INSERT INTO leads (name, email, phone, company, status, revenue) VALUES (?, ?, ?, ?, ?, ?)',
-    args: [name, email, phone || null, company || null, safeStatus, safeRevenue],
+    sql: 'INSERT INTO leads (name, email, phone, company, status, revenue, tag) VALUES (?, ?, ?, ?, ?, ?, ?)',
+    args: [name, email, phone || null, company || null, safeStatus, safeRevenue, tag || null],
   })
 
   const lead = await db.execute({

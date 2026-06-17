@@ -2,13 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-
-const STATUS_COLORS = {
-  New:        { bg: '#dbeafe', color: '#1e40af' },
-  Contacted:  { bg: '#fef9c3', color: '#854d0e' },
-  Qualified:  { bg: '#dcfce7', color: '#166534' },
-  Lost:       { bg: '#fee2e2', color: '#991b1b' },
-}
+import { STATUS_COLORS } from '@/lib/leadStatus'
 
 const cardStyle = {
   background: '#fff',
@@ -42,11 +36,11 @@ export default function LeadsPage() {
     setDeletingId(null)
   }
 
-  const closed = leads.filter(l => l.status === 'Qualified')
+  const closed = leads.filter(l => l.status === 'Closed')
   const revenue = leads.reduce((sum, l) => sum + (Number(l.revenue) || 0), 0)
   const stats = [
     { label: 'Total Leads', value: leads.length },
-    { label: 'Closed (Qualified)', value: closed.length },
+    { label: 'Closed', value: closed.length },
     { label: 'Revenue Generated', value: formatCurrency(revenue) },
   ]
 
@@ -80,6 +74,17 @@ export default function LeadsPage() {
           </p>
         </div>
         <div style={{ display: 'flex', gap: '0.75rem' }}>
+          <Link href="/leads/board" style={{
+            background: '#fff',
+            color: '#1e40af',
+            border: '1px solid #1e40af',
+            padding: '0.6rem 1.25rem',
+            borderRadius: '8px',
+            fontWeight: 600,
+            fontSize: '0.9rem',
+          }}>
+            Board View
+          </Link>
           <Link href="/leads/import" style={{
             background: '#fff',
             color: '#1e40af',
@@ -130,7 +135,7 @@ export default function LeadsPage() {
             </thead>
             <tbody>
               {leads.map((lead, i) => {
-                const badge = STATUS_COLORS[lead.status] || STATUS_COLORS.New
+                const badge = STATUS_COLORS[lead.status] || STATUS_COLORS.Uncalled
                 return (
                   <tr key={lead.id} style={{ borderBottom: i < leads.length - 1 ? '1px solid #f1f5f9' : 'none' }}>
                     <td style={{ padding: '0.85rem 1rem', fontWeight: 600 }}>{lead.name}</td>

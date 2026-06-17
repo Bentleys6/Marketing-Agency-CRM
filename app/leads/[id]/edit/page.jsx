@@ -3,8 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
-
-const STATUSES = ['New', 'Contacted', 'Qualified', 'Lost']
+import { STATUSES } from '@/lib/leadStatus'
 
 const inputStyle = {
   width: '100%',
@@ -42,8 +41,9 @@ export default function EditLeadPage() {
           email: data.email || '',
           phone: data.phone || '',
           company: data.company || '',
-          status: data.status || 'New',
+          status: data.status || 'Uncalled',
           revenue: data.revenue ?? '',
+          tag: data.tag || '',
         })
         setLoading(false)
       })

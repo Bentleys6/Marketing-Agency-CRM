@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { STATUSES } from '@/lib/leadStatus'
 
 const textareaStyle = {
   width: '100%',
@@ -46,7 +47,7 @@ function normalizeLeads(rawRows) {
     email: pick(row, EMAIL_KEYS),
     phone: pick(row, PHONE_KEYS),
     company: pick(row, COMPANY_KEYS),
-    status: 'New',
+    status: STATUSES.includes(row.status) ? row.status : 'Uncalled',
     revenue: 0,
   }))
 }
