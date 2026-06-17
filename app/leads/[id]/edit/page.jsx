@@ -43,6 +43,7 @@ export default function EditLeadPage() {
           phone: data.phone || '',
           company: data.company || '',
           status: data.status || 'New',
+          revenue: data.revenue ?? '',
         })
         setLoading(false)
       })
@@ -128,6 +129,12 @@ export default function EditLeadPage() {
               style={{ ...inputStyle, cursor: 'pointer' }}>
               {STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
             </select>
+          </div>
+
+          <div>
+            <label style={labelStyle} htmlFor="revenue">Revenue ($)</label>
+            <input id="revenue" name="revenue" type="number" min="0" step="0.01" value={form.revenue} onChange={handleChange}
+              placeholder="0.00" style={inputStyle} />
           </div>
         </div>
 

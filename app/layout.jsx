@@ -19,7 +19,15 @@ export default async function RootLayout({ children }) {
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           boxShadow: '0 1px 4px rgba(0,0,0,0.15)',
         }}>
-          <a href="/leads" style={{ fontWeight: 700, fontSize: '1.1rem' }}>Agency CRM</a>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+            <a href="/leads" style={{ fontWeight: 700, fontSize: '1.1rem' }}>Agency CRM</a>
+            {session && (
+              <>
+                <a href="/dashboard" style={{ fontSize: '0.875rem', opacity: 0.9 }}>Dashboard</a>
+                <a href="/leads" style={{ fontSize: '0.875rem', opacity: 0.9 }}>Leads</a>
+              </>
+            )}
+          </div>
           {session && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '0.875rem' }}>
               <span style={{ opacity: 0.75 }}>{session.user?.name}</span>

@@ -27,7 +27,7 @@ const labelStyle = {
 
 export default function NewLeadPage() {
   const router = useRouter()
-  const [form, setForm] = useState({ name: '', email: '', phone: '', company: '', status: 'New' })
+  const [form, setForm] = useState({ name: '', email: '', phone: '', company: '', status: 'New', revenue: '' })
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
@@ -107,6 +107,12 @@ export default function NewLeadPage() {
               style={{ ...inputStyle, cursor: 'pointer' }}>
               {STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
             </select>
+          </div>
+
+          <div>
+            <label style={labelStyle} htmlFor="revenue">Revenue ($)</label>
+            <input id="revenue" name="revenue" type="number" min="0" step="0.01" value={form.revenue} onChange={handleChange}
+              placeholder="0.00" style={inputStyle} />
           </div>
         </div>
 

@@ -22,18 +22,19 @@ export async function PUT(request, { params }) {
 
   const { id } = await params
   const body = await request.json()
-  const { name, email, phone, company, status } = body
+  const { name, email, phone, company, status, revenue } = body
 
   if (!name || !email) {
     return NextResponse.json({ error: 'Name and email are required' }, { status: 400 })
   }
 
   const safeStatus = VALID_STATUSES.includes(status) ? status : 'New'
+  const safeRevenue = Number(revenue) || 0
 
   const db = getDb()
   await db.execute({
-    sql: 'UPDATE leads SET name = ?, email = ?, phone = ?, company = ?, status = ? WHERE id = ?',
-    args: [name, email, phone || null, company || null, safeStatus, id],
+    sql: 'UPDATE leads SET name = ?, email = ?, phone = ?, company = ?, status = ?, revenue = ? WHERE id = ?',
+    args: [name, email, phone || null, company || null, safeStatus, safeRevenue, id],
   })
 
   const result = await db.execute({ sql: 'SELECT * FROM leads WHERE id = ?', args: [id] })
