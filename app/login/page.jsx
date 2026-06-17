@@ -26,16 +26,21 @@ export default function LoginPage() {
     setError('')
     setLoading(true)
 
-    const res = await signIn('credentials', {
-      email,
-      password,
-      redirect: false,
-    })
+    try {
+      const res = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
+      })
 
-    if (res?.ok) {
-      router.push('/leads')
-    } else {
-      setError('Incorrect email or password.')
+      if (res?.ok) {
+        router.push('/leads')
+      } else {
+        setError(res?.error ? `Sign in failed: ${res.error}` : 'Incorrect email or password.')
+        setLoading(false)
+      }
+    } catch (err) {
+      setError(`Something went wrong: ${err?.message || 'unknown error'}`)
       setLoading(false)
     }
   }
