@@ -1,8 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { signIn } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
+import { useActionState } from 'react'
+import { loginAction } from './actions'
 
 const inputStyle = {
   width: '100%',
@@ -15,37 +14,7 @@ const inputStyle = {
 }
 
 export default function LoginPage() {
-  const router = useRouter()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
-
-  async function handleSubmit(e) {
-    e.preventDefault()
-    setError('')
-    setLoading(true)
-
-    try {
-      const timeout = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Request timed out, please try again.')), 12000)
-      )
-      const res = await Promise.race([
-        signIn('credentials', { email, password, redirect: false }),
-        timeout,
-      ])
-
-      if (res?.ok) {
-        router.push('/leads')
-      } else {
-        setError(res?.error ? `Sign in failed: ${res.error}` : 'Incorrect email or password.')
-        setLoading(false)
-      }
-    } catch (err) {
-      setError(`Something went wrong: ${err?.message || 'unknown error'}`)
-      setLoading(false)
-    }
-  }
+  const [error, formAction, pending] = useActionState(loginAction, null)
 
   return (
     <div style={{
@@ -73,13 +42,13 @@ export default function LoginPage() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '1rem' }}>
+        <form action={formAction} style={{ display: 'grid', gap: '1rem' }}>
           <div>
             <label style={{ display: 'block', fontWeight: 600, fontSize: '0.85rem', marginBottom: '0.4rem' }}>
               Email
             </label>
             <input
-              type="email" value={email} onChange={e => setEmail(e.target.value)}
+              type="email" name="email"
               placeholder="you@agency.com" required style={inputStyle}
             />
           </div>
@@ -88,17 +57,17 @@ export default function LoginPage() {
               Password
             </label>
             <input
-              type="password" value={password} onChange={e => setPassword(e.target.value)}
+              type="password" name="password"
               placeholder="••••••••" required style={inputStyle}
             />
           </div>
-          <button type="submit" disabled={loading} style={{
+          <button type="submit" disabled={pending} style={{
             background: '#1e40af', color: '#fff', padding: '0.75rem',
             border: 'none', borderRadius: '8px', fontWeight: 600, fontSize: '0.95rem',
-            cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1,
+            cursor: pending ? 'not-allowed' : 'pointer', opacity: pending ? 0.7 : 1,
             marginTop: '0.25rem',
           }}>
-            {loading ? 'Signing in...' : 'Sign In'}
+            {pending ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
       </div>
