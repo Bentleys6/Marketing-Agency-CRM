@@ -21,12 +21,6 @@ export default async function RootLayout({ children }) {
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
             <a href="/leads" style={{ fontWeight: 700, fontSize: '1.1rem' }}>Agency CRM</a>
-            {session && (
-              <>
-                <a href="/dashboard" style={{ fontSize: '0.875rem', opacity: 0.9 }}>Dashboard</a>
-                <a href="/leads" style={{ fontSize: '0.875rem', opacity: 0.9 }}>Leads</a>
-              </>
-            )}
           </div>
           {session && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '0.875rem' }}>
