@@ -42,16 +42,23 @@ export default function NewLeadPage() {
       return
     }
     setSubmitting(true)
-    const res = await fetch('/api/leads', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    })
-    if (res.ok) {
-      router.push('/leads')
-    } else {
-      const data = await res.json()
-      setError(data.error || 'Something went wrong.')
+    try {
+      const res = await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+      if (res.ok) {
+        router.push('/leads')
+        return
+      }
+      const text = await res.text()
+      let data
+      try { data = JSON.parse(text) } catch { data = null }
+      setError(data?.error || `Something went wrong (status ${res.status}).`)
+    } catch (err) {
+      setError(`Request failed: ${err.message}`)
+    } finally {
       setSubmitting(false)
     }
   }

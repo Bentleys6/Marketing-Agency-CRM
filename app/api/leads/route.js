@@ -27,15 +27,20 @@ export async function POST(request) {
   const safeRevenue = Number(revenue) || 0
 
   const db = getDb()
-  const result = await db.execute({
-    sql: 'INSERT INTO leads (name, email, phone, company, status, revenue, tag) VALUES (?, ?, ?, ?, ?, ?, ?)',
-    args: [name, email, phone || null, company || null, safeStatus, safeRevenue, tag || null],
-  })
+  try {
+    const result = await db.execute({
+      sql: 'INSERT INTO leads (name, email, phone, company, status, revenue, tag) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      args: [name, email, phone || null, company || null, safeStatus, safeRevenue, tag || null],
+    })
 
-  const lead = await db.execute({
-    sql: 'SELECT * FROM leads WHERE id = ?',
-    args: [result.lastInsertRowid],
-  })
+    const lead = await db.execute({
+      sql: 'SELECT * FROM leads WHERE id = ?',
+      args: [result.lastInsertRowid],
+    })
 
-  return NextResponse.json(lead.rows[0], { status: 201 })
+    return NextResponse.json(lead.rows[0], { status: 201 })
+  } catch (err) {
+    console.error('Failed to create lead:', err)
+    return NextResponse.json({ error: err.message || 'Failed to create lead' }, { status: 500 })
+  }
 }
