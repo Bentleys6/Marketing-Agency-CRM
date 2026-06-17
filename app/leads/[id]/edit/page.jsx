@@ -136,6 +136,12 @@ export default function EditLeadPage() {
             <input id="revenue" name="revenue" type="number" min="0" step="0.01" value={form.revenue} onChange={handleChange}
               placeholder="0.00" style={inputStyle} />
           </div>
+
+          <div>
+            <label style={labelStyle} htmlFor="tag">Tag</label>
+            <input id="tag" name="tag" value={form.tag} onChange={handleChange}
+              placeholder="e.g. Hot, Cold Call, Referral" style={inputStyle} />
+          </div>
         </div>
 
         <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.5rem' }}>

@@ -13,6 +13,7 @@ export default function BoardPage() {
   const [loading, setLoading] = useState(true)
   const [dragId, setDragId] = useState(null)
   const [dragOverStatus, setDragOverStatus] = useState(null)
+  const [activeTag, setActiveTag] = useState('All')
 
   useEffect(() => {
     fetch('/api/leads')
@@ -38,6 +39,9 @@ export default function BoardPage() {
     setDragId(null)
   }
 
+  const tags = [...new Set(leads.map(l => l.tag).filter(Boolean))].sort()
+  const visibleLeads = activeTag === 'All' ? leads : leads.filter(l => l.tag === activeTag)
+
   return (
     <div>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
@@ -47,13 +51,36 @@ export default function BoardPage() {
         </div>
       </div>
 
+      {!loading && tags.length > 0 && (
+        <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
+          {['All', ...tags].map(tag => (
+            <button
+              key={tag}
+              onClick={() => setActiveTag(tag)}
+              style={{
+                background: activeTag === tag ? '#1e40af' : '#fff',
+                color: activeTag === tag ? '#fff' : '#475569',
+                border: '1px solid ' + (activeTag === tag ? '#1e40af' : '#cbd5e1'),
+                padding: '0.4rem 0.9rem',
+                borderRadius: '999px',
+                fontWeight: 600,
+                fontSize: '0.82rem',
+                cursor: 'pointer',
+              }}
+            >
+              {tag}
+            </button>
+          ))}
+        </div>
+      )}
+
       {loading ? (
         <p style={{ color: '#94a3b8' }}>Loading...</p>
       ) : (
         <div style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '1rem' }}>
           {STATUSES.map(status => {
             const badge = STATUS_COLORS[status]
-            const columnLeads = leads.filter(l => l.status === status)
+            const columnLeads = visibleLeads.filter(l => l.status === status)
             const columnRevenue = columnLeads.reduce((sum, l) => sum + (Number(l.revenue) || 0), 0)
             const isOver = dragOverStatus === status
             return (
@@ -115,6 +142,15 @@ export default function BoardPage() {
                         <p style={{ color: '#64748b', fontSize: '0.78rem', marginBottom: '0.2rem' }}>{lead.company}</p>
                       )}
                       <p style={{ color: '#94a3b8', fontSize: '0.76rem' }}>{lead.email}</p>
+                      {lead.tag && (
+                        <span style={{
+                          display: 'inline-block', marginTop: '0.3rem',
+                          background: '#f1f5f9', color: '#475569',
+                          padding: '0.1rem 0.5rem', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 600,
+                        }}>
+                          {lead.tag}
+                        </span>
+                      )}
                       {Number(lead.revenue) > 0 && (
                         <p style={{ color: '#166534', fontSize: '0.78rem', fontWeight: 600, marginTop: '0.3rem' }}>
                           {formatCurrency(lead.revenue)}

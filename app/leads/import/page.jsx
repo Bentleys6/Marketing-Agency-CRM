@@ -49,6 +49,7 @@ function normalizeLeads(rawRows) {
     company: pick(row, COMPANY_KEYS),
     status: STATUSES.includes(row.status) ? row.status : 'Uncalled',
     revenue: 0,
+    tag: row.tag || '',
   }))
 }
 

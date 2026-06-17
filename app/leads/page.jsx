@@ -19,6 +19,7 @@ export default function LeadsPage() {
   const [leads, setLeads] = useState([])
   const [loading, setLoading] = useState(true)
   const [deletingId, setDeletingId] = useState(null)
+  const [activeTag, setActiveTag] = useState('All')
 
   useEffect(() => {
     fetch('/api/leads')
@@ -35,6 +36,9 @@ export default function LeadsPage() {
     }
     setDeletingId(null)
   }
+
+  const tags = [...new Set(leads.map(l => l.tag).filter(Boolean))].sort()
+  const visibleLeads = activeTag === 'All' ? leads : leads.filter(l => l.tag === activeTag)
 
   const closed = leads.filter(l => l.status === 'Closed')
   const revenue = leads.reduce((sum, l) => sum + (Number(l.revenue) || 0), 0)
@@ -109,6 +113,29 @@ export default function LeadsPage() {
         </div>
       </div>
 
+      {!loading && tags.length > 0 && (
+        <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
+          {['All', ...tags].map(tag => (
+            <button
+              key={tag}
+              onClick={() => setActiveTag(tag)}
+              style={{
+                background: activeTag === tag ? '#1e40af' : '#fff',
+                color: activeTag === tag ? '#fff' : '#475569',
+                border: '1px solid ' + (activeTag === tag ? '#1e40af' : '#cbd5e1'),
+                padding: '0.4rem 0.9rem',
+                borderRadius: '999px',
+                fontWeight: 600,
+                fontSize: '0.82rem',
+                cursor: 'pointer',
+              }}
+            >
+              {tag}
+            </button>
+          ))}
+        </div>
+      )}
+
       {loading ? (
         <p style={{ color: '#94a3b8' }}>Loading...</p>
       ) : leads.length === 0 ? (
@@ -126,7 +153,7 @@ export default function LeadsPage() {
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
             <thead>
               <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
-                {['Name', 'Email', 'Phone', 'Company', 'Status', 'Added', ''].map(h => (
+                {['Name', 'Email', 'Phone', 'Company', 'Status', 'Tag', 'Added', ''].map(h => (
                   <th key={h} style={{ padding: '0.75rem 1rem', textAlign: 'left', fontWeight: 600, color: '#475569', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                     {h}
                   </th>
@@ -134,10 +161,10 @@ export default function LeadsPage() {
               </tr>
             </thead>
             <tbody>
-              {leads.map((lead, i) => {
+              {visibleLeads.map((lead, i) => {
                 const badge = STATUS_COLORS[lead.status] || STATUS_COLORS.Uncalled
                 return (
-                  <tr key={lead.id} style={{ borderBottom: i < leads.length - 1 ? '1px solid #f1f5f9' : 'none' }}>
+                  <tr key={lead.id} style={{ borderBottom: i < visibleLeads.length - 1 ? '1px solid #f1f5f9' : 'none' }}>
                     <td style={{ padding: '0.85rem 1rem', fontWeight: 600 }}>{lead.name}</td>
                     <td style={{ padding: '0.85rem 1rem', color: '#475569' }}>{lead.email}</td>
                     <td style={{ padding: '0.85rem 1rem', color: '#475569' }}>{lead.phone || '—'}</td>
@@ -150,6 +177,9 @@ export default function LeadsPage() {
                       }}>
                         {lead.status}
                       </span>
+                    </td>
+                    <td style={{ padding: '0.85rem 1rem', color: '#475569', fontSize: '0.82rem' }}>
+                      {lead.tag || '—'}
                     </td>
                     <td style={{ padding: '0.85rem 1rem', color: '#94a3b8', fontSize: '0.82rem' }}>
                       {new Date(lead.created_at).toLocaleDateString()}
