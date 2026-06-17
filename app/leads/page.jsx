@@ -13,12 +13,23 @@ const STATUS_COLORS = {
 export default function LeadsPage() {
   const [leads, setLeads] = useState([])
   const [loading, setLoading] = useState(true)
+  const [deletingId, setDeletingId] = useState(null)
 
   useEffect(() => {
     fetch('/api/leads')
       .then(r => r.json())
       .then(data => { setLeads(data); setLoading(false) })
   }, [])
+
+  async function handleDelete(id) {
+    if (!confirm('Delete this lead? This cannot be undone.')) return
+    setDeletingId(id)
+    const res = await fetch(`/api/leads/${id}`, { method: 'DELETE' })
+    if (res.ok) {
+      setLeads(prev => prev.filter(l => l.id !== id))
+    }
+    setDeletingId(null)
+  }
 
   return (
     <div>
@@ -58,7 +69,7 @@ export default function LeadsPage() {
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
             <thead>
               <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
-                {['Name', 'Email', 'Phone', 'Company', 'Status', 'Added'].map(h => (
+                {['Name', 'Email', 'Phone', 'Company', 'Status', 'Added', ''].map(h => (
                   <th key={h} style={{ padding: '0.75rem 1rem', textAlign: 'left', fontWeight: 600, color: '#475569', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                     {h}
                   </th>
@@ -85,6 +96,24 @@ export default function LeadsPage() {
                     </td>
                     <td style={{ padding: '0.85rem 1rem', color: '#94a3b8', fontSize: '0.82rem' }}>
                       {new Date(lead.created_at).toLocaleDateString()}
+                    </td>
+                    <td style={{ padding: '0.85rem 1rem', whiteSpace: 'nowrap' }}>
+                      <Link href={`/leads/${lead.id}/edit`} style={{
+                        color: '#1e40af', fontWeight: 600, fontSize: '0.82rem', marginRight: '1rem',
+                      }}>
+                        Edit
+                      </Link>
+                      <button
+                        onClick={() => handleDelete(lead.id)}
+                        disabled={deletingId === lead.id}
+                        style={{
+                          background: 'none', border: 'none', color: '#dc2626',
+                          fontWeight: 600, fontSize: '0.82rem', cursor: 'pointer', padding: 0,
+                          opacity: deletingId === lead.id ? 0.5 : 1,
+                        }}
+                      >
+                        {deletingId === lead.id ? 'Deleting...' : 'Delete'}
+                      </button>
                     </td>
                   </tr>
                 )
