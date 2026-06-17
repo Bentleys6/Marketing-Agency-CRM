@@ -33,7 +33,16 @@ export default function SetupPage() {
         },
         body: JSON.stringify({ name, email, password }),
       })
-      const data = await res.json()
+      const text = await res.text()
+      let data
+      try {
+        data = JSON.parse(text)
+      } catch {
+        setMessage(`Error (status ${res.status}): ${text || 'empty response from server'}`)
+        setLoading(false)
+        return
+      }
+
       if (res.ok) {
         setMessage(`Success: ${data.message}`)
       } else {
