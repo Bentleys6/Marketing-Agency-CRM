@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { STATUS_COLORS } from '@/lib/leadStatus'
+import { STATUS_COLORS, TEAM_MEMBERS } from '@/lib/leadStatus'
 
 const cardStyle = {
   background: '#fff',
@@ -20,6 +20,7 @@ export default function LeadsPage() {
   const [loading, setLoading] = useState(true)
   const [deletingId, setDeletingId] = useState(null)
   const [activeTag, setActiveTag] = useState('All')
+  const [activeMember, setActiveMember] = useState('All')
 
   useEffect(() => {
     fetch('/api/leads')
@@ -38,7 +39,9 @@ export default function LeadsPage() {
   }
 
   const tags = [...new Set(leads.map(l => l.tag).filter(Boolean))].sort()
-  const visibleLeads = activeTag === 'All' ? leads : leads.filter(l => l.tag === activeTag)
+  const visibleLeads = leads
+    .filter(l => activeTag === 'All' || l.tag === activeTag)
+    .filter(l => activeMember === 'All' || l.assigned_to === activeMember)
 
   const closed = leads.filter(l => l.status === 'Closed')
   const revenue = leads.reduce((sum, l) => sum + (Number(l.revenue) || 0), 0)
@@ -113,6 +116,29 @@ export default function LeadsPage() {
         </div>
       </div>
 
+      {!loading && (
+        <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
+          {['All', ...TEAM_MEMBERS].map(member => (
+            <button
+              key={member}
+              onClick={() => setActiveMember(member)}
+              style={{
+                background: activeMember === member ? '#0f172a' : '#fff',
+                color: activeMember === member ? '#fff' : '#475569',
+                border: '1px solid ' + (activeMember === member ? '#0f172a' : '#cbd5e1'),
+                padding: '0.4rem 0.9rem',
+                borderRadius: '999px',
+                fontWeight: 600,
+                fontSize: '0.82rem',
+                cursor: 'pointer',
+              }}
+            >
+              {member}
+            </button>
+          ))}
+        </div>
+      )}
+
       {!loading && tags.length > 0 && (
         <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
           {['All', ...tags].map(tag => (
@@ -153,7 +179,7 @@ export default function LeadsPage() {
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
             <thead>
               <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
-                {['Name', 'Email', 'Phone', 'Company', 'Status', 'Tag', 'Added', ''].map(h => (
+                {['Name', 'Email', 'Phone', 'Company', 'Status', 'Tag', 'Assigned', 'Added', ''].map(h => (
                   <th key={h} style={{ padding: '0.75rem 1rem', textAlign: 'left', fontWeight: 600, color: '#475569', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                     {h}
                   </th>
@@ -180,6 +206,9 @@ export default function LeadsPage() {
                     </td>
                     <td style={{ padding: '0.85rem 1rem', color: '#475569', fontSize: '0.82rem' }}>
                       {lead.tag || '—'}
+                    </td>
+                    <td style={{ padding: '0.85rem 1rem', color: '#475569', fontSize: '0.82rem' }}>
+                      {lead.assigned_to || '—'}
                     </td>
                     <td style={{ padding: '0.85rem 1rem', color: '#94a3b8', fontSize: '0.82rem' }}>
                       {new Date(lead.created_at).toLocaleDateString()}

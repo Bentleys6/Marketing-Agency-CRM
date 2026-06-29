@@ -17,7 +17,7 @@ export async function POST(request) {
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const body = await request.json()
-  const { name, email, phone, company, status, revenue, tag } = body
+  const { name, email, phone, company, status, revenue, tag, assigned_to } = body
 
   if (!name || !email) {
     return NextResponse.json({ error: 'Name and email are required' }, { status: 400 })
@@ -29,8 +29,8 @@ export async function POST(request) {
   const db = getDb()
   try {
     const result = await db.execute({
-      sql: 'INSERT INTO leads (name, email, phone, company, status, revenue, tag) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      args: [name, email, phone || null, company || null, safeStatus, safeRevenue, tag || null],
+      sql: 'INSERT INTO leads (name, email, phone, company, status, revenue, tag, assigned_to) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      args: [name, email, phone || null, company || null, safeStatus, safeRevenue, tag || null, assigned_to || null],
     })
 
     const lead = await db.execute({

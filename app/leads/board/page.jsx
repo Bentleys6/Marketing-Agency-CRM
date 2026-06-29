@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { STATUSES, STATUS_COLORS } from '@/lib/leadStatus'
+import { STATUSES, STATUS_COLORS, TEAM_MEMBERS } from '@/lib/leadStatus'
 
 function formatCurrency(amount) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount)
@@ -14,6 +14,7 @@ export default function BoardPage() {
   const [dragId, setDragId] = useState(null)
   const [dragOverStatus, setDragOverStatus] = useState(null)
   const [activeTag, setActiveTag] = useState('All')
+  const [activeMember, setActiveMember] = useState('All')
 
   useEffect(() => {
     fetch('/api/leads')
@@ -40,7 +41,9 @@ export default function BoardPage() {
   }
 
   const tags = [...new Set(leads.map(l => l.tag).filter(Boolean))].sort()
-  const visibleLeads = activeTag === 'All' ? leads : leads.filter(l => l.tag === activeTag)
+  const visibleLeads = leads
+    .filter(l => activeTag === 'All' || l.tag === activeTag)
+    .filter(l => activeMember === 'All' || l.assigned_to === activeMember)
 
   return (
     <div>
@@ -50,6 +53,29 @@ export default function BoardPage() {
           <h1 style={{ fontSize: '1.5rem', fontWeight: 700, marginTop: '0.5rem' }}>Leads Board</h1>
         </div>
       </div>
+
+      {!loading && (
+        <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
+          {['All', ...TEAM_MEMBERS].map(member => (
+            <button
+              key={member}
+              onClick={() => setActiveMember(member)}
+              style={{
+                background: activeMember === member ? '#0f172a' : '#fff',
+                color: activeMember === member ? '#fff' : '#475569',
+                border: '1px solid ' + (activeMember === member ? '#0f172a' : '#cbd5e1'),
+                padding: '0.4rem 0.9rem',
+                borderRadius: '999px',
+                fontWeight: 600,
+                fontSize: '0.82rem',
+                cursor: 'pointer',
+              }}
+            >
+              {member}
+            </button>
+          ))}
+        </div>
+      )}
 
       {!loading && tags.length > 0 && (
         <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
@@ -142,14 +168,25 @@ export default function BoardPage() {
                         <p style={{ color: '#64748b', fontSize: '0.78rem', marginBottom: '0.2rem' }}>{lead.company}</p>
                       )}
                       <p style={{ color: '#94a3b8', fontSize: '0.76rem' }}>{lead.email}</p>
-                      {lead.tag && (
-                        <span style={{
-                          display: 'inline-block', marginTop: '0.3rem',
-                          background: '#f1f5f9', color: '#475569',
-                          padding: '0.1rem 0.5rem', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 600,
-                        }}>
-                          {lead.tag}
-                        </span>
+                      {(lead.tag || lead.assigned_to) && (
+                        <div style={{ display: 'flex', gap: '0.3rem', marginTop: '0.3rem', flexWrap: 'wrap' }}>
+                          {lead.tag && (
+                            <span style={{
+                              background: '#f1f5f9', color: '#475569',
+                              padding: '0.1rem 0.5rem', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 600,
+                            }}>
+                              {lead.tag}
+                            </span>
+                          )}
+                          {lead.assigned_to && (
+                            <span style={{
+                              background: '#e0e7ff', color: '#3730a3',
+                              padding: '0.1rem 0.5rem', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 600,
+                            }}>
+                              {lead.assigned_to}
+                            </span>
+                          )}
+                        </div>
                       )}
                       {Number(lead.revenue) > 0 && (
                         <p style={{ color: '#166534', fontSize: '0.78rem', fontWeight: 600, marginTop: '0.3rem' }}>

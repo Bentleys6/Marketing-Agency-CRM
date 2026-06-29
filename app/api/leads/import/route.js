@@ -34,8 +34,8 @@ export async function POST(request) {
 
     try {
       await db.execute({
-        sql: 'INSERT INTO leads (name, email, phone, company, status, revenue, tag) VALUES (?, ?, ?, ?, ?, ?, ?)',
-        args: [name, email, lead.phone || null, lead.company || null, safeStatus, safeRevenue, lead.tag || null],
+        sql: 'INSERT INTO leads (name, email, phone, company, status, revenue, tag, assigned_to) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+        args: [name, email, lead.phone || null, lead.company || null, safeStatus, safeRevenue, lead.tag || null, lead.assigned_to || null],
       })
       created++
     } catch (err) {

@@ -21,7 +21,7 @@ export async function PUT(request, { params }) {
 
   const { id } = await params
   const body = await request.json()
-  const { name, email, phone, company, status, revenue, tag } = body
+  const { name, email, phone, company, status, revenue, tag, assigned_to } = body
 
   if (!name || !email) {
     return NextResponse.json({ error: 'Name and email are required' }, { status: 400 })
@@ -32,8 +32,8 @@ export async function PUT(request, { params }) {
 
   const db = getDb()
   await db.execute({
-    sql: 'UPDATE leads SET name = ?, email = ?, phone = ?, company = ?, status = ?, revenue = ?, tag = ? WHERE id = ?',
-    args: [name, email, phone || null, company || null, safeStatus, safeRevenue, tag || null, id],
+    sql: 'UPDATE leads SET name = ?, email = ?, phone = ?, company = ?, status = ?, revenue = ?, tag = ?, assigned_to = ? WHERE id = ?',
+    args: [name, email, phone || null, company || null, safeStatus, safeRevenue, tag || null, assigned_to || null, id],
   })
 
   const result = await db.execute({ sql: 'SELECT * FROM leads WHERE id = ?', args: [id] })

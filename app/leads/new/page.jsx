@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { STATUSES } from '@/lib/leadStatus'
+import { STATUSES, TEAM_MEMBERS } from '@/lib/leadStatus'
 
 const inputStyle = {
   width: '100%',
@@ -26,7 +26,7 @@ const labelStyle = {
 
 export default function NewLeadPage() {
   const router = useRouter()
-  const [form, setForm] = useState({ name: '', email: '', phone: '', company: '', status: 'Uncalled', revenue: '', tag: '' })
+  const [form, setForm] = useState({ name: '', email: '', phone: '', company: '', status: 'Uncalled', revenue: '', tag: '', assigned_to: '' })
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
@@ -125,6 +125,15 @@ export default function NewLeadPage() {
             <label style={labelStyle} htmlFor="tag">Tag</label>
             <input id="tag" name="tag" value={form.tag} onChange={handleChange}
               placeholder="e.g. Hot, Cold Call, Referral" style={inputStyle} />
+          </div>
+
+          <div>
+            <label style={labelStyle} htmlFor="assigned_to">Assigned To</label>
+            <select id="assigned_to" name="assigned_to" value={form.assigned_to} onChange={handleChange}
+              style={{ ...inputStyle, cursor: 'pointer' }}>
+              <option value="">Unassigned</option>
+              {TEAM_MEMBERS.map(m => <option key={m} value={m}>{m}</option>)}
+            </select>
           </div>
         </div>
 

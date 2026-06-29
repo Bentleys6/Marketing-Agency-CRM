@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
-import { STATUSES } from '@/lib/leadStatus'
+import { STATUSES, TEAM_MEMBERS } from '@/lib/leadStatus'
 
 const inputStyle = {
   width: '100%',
@@ -44,6 +44,7 @@ export default function EditLeadPage() {
           status: data.status || 'Uncalled',
           revenue: data.revenue ?? '',
           tag: data.tag || '',
+          assigned_to: data.assigned_to || '',
         })
         setLoading(false)
       })
@@ -61,16 +62,23 @@ export default function EditLeadPage() {
       return
     }
     setSubmitting(true)
-    const res = await fetch(`/api/leads/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    })
-    if (res.ok) {
-      router.push('/leads')
-    } else {
-      const data = await res.json()
-      setError(data.error || 'Something went wrong.')
+    try {
+      const res = await fetch(`/api/leads/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+      if (res.ok) {
+        router.push('/leads')
+        return
+      }
+      const text = await res.text()
+      let data
+      try { data = JSON.parse(text) } catch { data = null }
+      setError(data?.error || `Something went wrong (status ${res.status}).`)
+    } catch (err) {
+      setError(`Request failed: ${err.message}`)
+    } finally {
       setSubmitting(false)
     }
   }
@@ -141,6 +149,15 @@ export default function EditLeadPage() {
             <label style={labelStyle} htmlFor="tag">Tag</label>
             <input id="tag" name="tag" value={form.tag} onChange={handleChange}
               placeholder="e.g. Hot, Cold Call, Referral" style={inputStyle} />
+          </div>
+
+          <div>
+            <label style={labelStyle} htmlFor="assigned_to">Assigned To</label>
+            <select id="assigned_to" name="assigned_to" value={form.assigned_to} onChange={handleChange}
+              style={{ ...inputStyle, cursor: 'pointer' }}>
+              <option value="">Unassigned</option>
+              {TEAM_MEMBERS.map(m => <option key={m} value={m}>{m}</option>)}
+            </select>
           </div>
         </div>
 
