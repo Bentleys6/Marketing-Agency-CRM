@@ -4,17 +4,19 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { STATUSES } from '@/lib/leadStatus'
+import { colors } from '@/lib/theme'
 
 const textareaStyle = {
   width: '100%',
   minHeight: '260px',
   padding: '0.85rem',
-  border: '1px solid #cbd5e1',
+  border: `1px solid ${colors.border}`,
   borderRadius: '8px',
   fontSize: '0.85rem',
   fontFamily: 'monospace',
   outline: 'none',
-  background: '#fff',
+  background: colors.surfaceAlt,
+  color: colors.text,
   resize: 'vertical',
 }
 
@@ -103,20 +105,20 @@ export default function ImportLeadsPage() {
   return (
     <div style={{ maxWidth: '720px' }}>
       <div style={{ marginBottom: '1.5rem' }}>
-        <Link href="/leads" style={{ color: '#64748b', fontSize: '0.85rem' }}>← Back to Leads</Link>
+        <Link href="/leads" style={{ color: colors.textMuted, fontSize: '0.85rem' }}>← Back to Leads</Link>
         <h1 style={{ fontSize: '1.5rem', fontWeight: 700, marginTop: '0.5rem' }}>Import Leads</h1>
-        <p style={{ color: '#64748b', fontSize: '0.9rem', marginTop: '0.25rem' }}>
+        <p style={{ color: colors.textMuted, fontSize: '0.9rem', marginTop: '0.25rem' }}>
           Paste a JSON array (e.g. exported from Apify) or CSV with a header row. Recognized fields:
           name/fullName, email, phone/phoneNumber, company/companyName.
         </p>
       </div>
 
       <div style={{
-        background: '#fff', borderRadius: '12px', border: '1px solid #e2e8f0', padding: '1.75rem'
+        background: colors.surface, borderRadius: '12px', border: `1px solid ${colors.border}`, padding: '1.75rem'
       }}>
         {error && (
           <div style={{
-            background: '#fee2e2', color: '#991b1b', padding: '0.75rem 1rem',
+            background: '#7f1d1d', color: '#fecaca', padding: '0.75rem 1rem',
             borderRadius: '8px', fontSize: '0.875rem', marginBottom: '1.25rem'
           }}>
             {error}
@@ -125,7 +127,7 @@ export default function ImportLeadsPage() {
 
         {result && (
           <div style={{
-            background: '#dcfce7', color: '#166534', padding: '0.75rem 1rem',
+            background: '#14532d', color: '#bbf7d0', padding: '0.75rem 1rem',
             borderRadius: '8px', fontSize: '0.875rem', marginBottom: '1.25rem'
           }}>
             <p>Created {result.created} lead{result.created !== 1 ? 's' : ''}, skipped {result.skipped}.</p>
@@ -146,15 +148,15 @@ export default function ImportLeadsPage() {
 
         <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.25rem' }}>
           <button onClick={handleImport} disabled={submitting || !text.trim()} style={{
-            background: '#1e40af', color: '#fff', padding: '0.7rem 1.5rem',
+            background: colors.primary, color: '#fff', padding: '0.7rem 1.5rem',
             border: 'none', borderRadius: '8px', fontWeight: 600, fontSize: '0.9rem',
             cursor: submitting ? 'not-allowed' : 'pointer', opacity: submitting ? 0.7 : 1,
           }}>
             {submitting ? 'Importing...' : 'Import Leads'}
           </button>
           <button onClick={() => router.push('/leads')} style={{
-            padding: '0.7rem 1.25rem', border: '1px solid #cbd5e1', borderRadius: '8px',
-            fontWeight: 600, fontSize: '0.9rem', color: '#475569', background: 'none', cursor: 'pointer',
+            padding: '0.7rem 1.25rem', border: `1px solid ${colors.border}`, borderRadius: '8px',
+            fontWeight: 600, fontSize: '0.9rem', color: colors.textMuted, background: 'none', cursor: 'pointer',
           }}>
             Done
           </button>

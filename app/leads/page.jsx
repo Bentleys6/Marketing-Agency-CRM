@@ -3,13 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { STATUS_COLORS, TEAM_MEMBERS } from '@/lib/leadStatus'
-
-const cardStyle = {
-  background: '#fff',
-  borderRadius: '12px',
-  border: '1px solid #e2e8f0',
-  padding: '1.5rem',
-}
+import { colors, cardStyle, pillStyle, primaryButtonStyle, secondaryButtonStyle } from '@/lib/theme'
 
 function formatCurrency(amount) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount)
@@ -62,10 +56,10 @@ export default function LeadsPage() {
         }}>
           {stats.map(s => (
             <div key={s.label} style={cardStyle}>
-              <p style={{ color: '#64748b', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.5rem' }}>
+              <p style={{ color: colors.textMuted, fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.5rem' }}>
                 {s.label}
               </p>
-              <p style={{ fontSize: '1.75rem', fontWeight: 700, color: '#0f172a' }}>
+              <p style={{ fontSize: '1.75rem', fontWeight: 700, color: colors.primaryLight }}>
                 {s.value}
               </p>
             </div>
@@ -76,41 +70,18 @@ export default function LeadsPage() {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
         <div>
           <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>Leads</h2>
-          <p style={{ color: '#64748b', fontSize: '0.9rem', marginTop: '2px' }}>
+          <p style={{ color: colors.textMuted, fontSize: '0.9rem', marginTop: '2px' }}>
             {leads.length} total lead{leads.length !== 1 ? 's' : ''}
           </p>
         </div>
         <div style={{ display: 'flex', gap: '0.75rem' }}>
-          <Link href="/leads/board" style={{
-            background: '#fff',
-            color: '#1e40af',
-            border: '1px solid #1e40af',
-            padding: '0.6rem 1.25rem',
-            borderRadius: '8px',
-            fontWeight: 600,
-            fontSize: '0.9rem',
-          }}>
+          <Link href="/leads/board" style={secondaryButtonStyle}>
             Board View
           </Link>
-          <Link href="/leads/import" style={{
-            background: '#fff',
-            color: '#1e40af',
-            border: '1px solid #1e40af',
-            padding: '0.6rem 1.25rem',
-            borderRadius: '8px',
-            fontWeight: 600,
-            fontSize: '0.9rem',
-          }}>
+          <Link href="/leads/import" style={secondaryButtonStyle}>
             Import
           </Link>
-          <Link href="/leads/new" style={{
-            background: '#1e40af',
-            color: '#fff',
-            padding: '0.6rem 1.25rem',
-            borderRadius: '8px',
-            fontWeight: 600,
-            fontSize: '0.9rem',
-          }}>
+          <Link href="/leads/new" style={primaryButtonStyle}>
             + Add Lead
           </Link>
         </div>
@@ -122,16 +93,7 @@ export default function LeadsPage() {
             <button
               key={member}
               onClick={() => setActiveMember(member)}
-              style={{
-                background: activeMember === member ? '#0f172a' : '#fff',
-                color: activeMember === member ? '#fff' : '#475569',
-                border: '1px solid ' + (activeMember === member ? '#0f172a' : '#cbd5e1'),
-                padding: '0.4rem 0.9rem',
-                borderRadius: '999px',
-                fontWeight: 600,
-                fontSize: '0.82rem',
-                cursor: 'pointer',
-              }}
+              style={pillStyle(activeMember === member)}
             >
               {member}
             </button>
@@ -145,16 +107,7 @@ export default function LeadsPage() {
             <button
               key={tag}
               onClick={() => setActiveTag(tag)}
-              style={{
-                background: activeTag === tag ? '#1e40af' : '#fff',
-                color: activeTag === tag ? '#fff' : '#475569',
-                border: '1px solid ' + (activeTag === tag ? '#1e40af' : '#cbd5e1'),
-                padding: '0.4rem 0.9rem',
-                borderRadius: '999px',
-                fontWeight: 600,
-                fontSize: '0.82rem',
-                cursor: 'pointer',
-              }}
+              style={pillStyle(activeTag === tag)}
             >
               {tag}
             </button>
@@ -163,24 +116,24 @@ export default function LeadsPage() {
       )}
 
       {loading ? (
-        <p style={{ color: '#94a3b8' }}>Loading...</p>
+        <p style={{ color: colors.textFaint }}>Loading...</p>
       ) : leads.length === 0 ? (
         <div style={{
-          background: '#fff', borderRadius: '12px', border: '1px solid #e2e8f0',
-          padding: '3rem', textAlign: 'center', color: '#94a3b8'
+          background: colors.surface, borderRadius: '12px', border: `1px solid ${colors.border}`,
+          padding: '3rem', textAlign: 'center', color: colors.textFaint
         }}>
           <p style={{ fontSize: '1rem' }}>No leads yet.</p>
-          <Link href="/leads/new" style={{ color: '#1e40af', fontWeight: 600, marginTop: '0.5rem', display: 'inline-block' }}>
+          <Link href="/leads/new" style={{ color: colors.primaryLight, fontWeight: 600, marginTop: '0.5rem', display: 'inline-block' }}>
             Add your first lead →
           </Link>
         </div>
       ) : (
-        <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #e2e8f0', overflow: 'hidden' }}>
+        <div style={{ background: colors.surface, borderRadius: '12px', border: `1px solid ${colors.border}`, overflow: 'hidden' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
             <thead>
-              <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+              <tr style={{ background: colors.surfaceAlt, borderBottom: `1px solid ${colors.border}` }}>
                 {['Name', 'Email', 'Phone', 'Company', 'Status', 'Tag', 'Assigned', 'Added', ''].map(h => (
-                  <th key={h} style={{ padding: '0.75rem 1rem', textAlign: 'left', fontWeight: 600, color: '#475569', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  <th key={h} style={{ padding: '0.75rem 1rem', textAlign: 'left', fontWeight: 600, color: colors.textMuted, fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                     {h}
                   </th>
                 ))}
@@ -190,11 +143,11 @@ export default function LeadsPage() {
               {visibleLeads.map((lead, i) => {
                 const badge = STATUS_COLORS[lead.status] || STATUS_COLORS.Uncalled
                 return (
-                  <tr key={lead.id} style={{ borderBottom: i < visibleLeads.length - 1 ? '1px solid #f1f5f9' : 'none' }}>
+                  <tr key={lead.id} style={{ borderBottom: i < visibleLeads.length - 1 ? `1px solid ${colors.border}` : 'none' }}>
                     <td style={{ padding: '0.85rem 1rem', fontWeight: 600 }}>{lead.name}</td>
-                    <td style={{ padding: '0.85rem 1rem', color: '#475569' }}>{lead.email}</td>
-                    <td style={{ padding: '0.85rem 1rem', color: '#475569' }}>{lead.phone || '—'}</td>
-                    <td style={{ padding: '0.85rem 1rem', color: '#475569' }}>{lead.company || '—'}</td>
+                    <td style={{ padding: '0.85rem 1rem', color: colors.textMuted }}>{lead.email}</td>
+                    <td style={{ padding: '0.85rem 1rem', color: colors.textMuted }}>{lead.phone || '—'}</td>
+                    <td style={{ padding: '0.85rem 1rem', color: colors.textMuted }}>{lead.company || '—'}</td>
                     <td style={{ padding: '0.85rem 1rem' }}>
                       <span style={{
                         background: badge.bg, color: badge.color,
@@ -204,18 +157,18 @@ export default function LeadsPage() {
                         {lead.status}
                       </span>
                     </td>
-                    <td style={{ padding: '0.85rem 1rem', color: '#475569', fontSize: '0.82rem' }}>
+                    <td style={{ padding: '0.85rem 1rem', color: colors.textMuted, fontSize: '0.82rem' }}>
                       {lead.tag || '—'}
                     </td>
-                    <td style={{ padding: '0.85rem 1rem', color: '#475569', fontSize: '0.82rem' }}>
+                    <td style={{ padding: '0.85rem 1rem', color: colors.textMuted, fontSize: '0.82rem' }}>
                       {lead.assigned_to || '—'}
                     </td>
-                    <td style={{ padding: '0.85rem 1rem', color: '#94a3b8', fontSize: '0.82rem' }}>
+                    <td style={{ padding: '0.85rem 1rem', color: colors.textFaint, fontSize: '0.82rem' }}>
                       {new Date(lead.created_at).toLocaleDateString()}
                     </td>
                     <td style={{ padding: '0.85rem 1rem', whiteSpace: 'nowrap' }}>
                       <Link href={`/leads/${lead.id}/edit`} style={{
-                        color: '#1e40af', fontWeight: 600, fontSize: '0.82rem', marginRight: '1rem',
+                        color: colors.primaryLight, fontWeight: 600, fontSize: '0.82rem', marginRight: '1rem',
                       }}>
                         Edit
                       </Link>
@@ -223,7 +176,7 @@ export default function LeadsPage() {
                         onClick={() => handleDelete(lead.id)}
                         disabled={deletingId === lead.id}
                         style={{
-                          background: 'none', border: 'none', color: '#dc2626',
+                          background: 'none', border: 'none', color: colors.danger,
                           fontWeight: 600, fontSize: '0.82rem', cursor: 'pointer', padding: 0,
                           opacity: deletingId === lead.id ? 0.5 : 1,
                         }}

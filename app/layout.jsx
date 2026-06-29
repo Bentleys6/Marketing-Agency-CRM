@@ -14,13 +14,13 @@ export default async function RootLayout({ children }) {
     <html lang="en">
       <body>
         <nav style={{
-          background: '#1e40af', color: '#fff',
+          background: '#150f20', color: '#f4f1fa',
           padding: '0 2rem', height: '60px',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          boxShadow: '0 1px 4px rgba(0,0,0,0.15)',
+          borderBottom: '1px solid #2c2340',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-            <a href="/leads" style={{ fontWeight: 700, fontSize: '1.1rem' }}>Agency CRM</a>
+            <a href="/leads" style={{ fontWeight: 700, fontSize: '1.1rem', color: '#c084fc' }}>Agency CRM</a>
           </div>
           {session && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '0.875rem' }}>

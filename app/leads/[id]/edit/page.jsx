@@ -4,25 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import { STATUSES, TEAM_MEMBERS } from '@/lib/leadStatus'
-
-const inputStyle = {
-  width: '100%',
-  padding: '0.65rem 0.85rem',
-  border: '1px solid #cbd5e1',
-  borderRadius: '8px',
-  fontSize: '0.9rem',
-  outline: 'none',
-  transition: 'border-color 0.15s',
-  background: '#fff',
-}
-
-const labelStyle = {
-  display: 'block',
-  fontWeight: 600,
-  fontSize: '0.85rem',
-  color: '#374151',
-  marginBottom: '0.4rem',
-}
+import { colors, inputStyle, labelStyle } from '@/lib/theme'
 
 export default function EditLeadPage() {
   const router = useRouter()
@@ -84,22 +66,22 @@ export default function EditLeadPage() {
   }
 
   if (loading || !form) {
-    return <p style={{ color: '#94a3b8' }}>Loading...</p>
+    return <p style={{ color: colors.textFaint }}>Loading...</p>
   }
 
   return (
     <div style={{ maxWidth: '560px' }}>
       <div style={{ marginBottom: '1.5rem' }}>
-        <Link href="/leads" style={{ color: '#64748b', fontSize: '0.85rem' }}>← Back to Leads</Link>
+        <Link href="/leads" style={{ color: colors.textMuted, fontSize: '0.85rem' }}>← Back to Leads</Link>
         <h1 style={{ fontSize: '1.5rem', fontWeight: 700, marginTop: '0.5rem' }}>Edit Lead</h1>
       </div>
 
       <form onSubmit={handleSubmit} style={{
-        background: '#fff', borderRadius: '12px', border: '1px solid #e2e8f0', padding: '1.75rem'
+        background: colors.surface, borderRadius: '12px', border: `1px solid ${colors.border}`, padding: '1.75rem'
       }}>
         {error && (
           <div style={{
-            background: '#fee2e2', color: '#991b1b', padding: '0.75rem 1rem',
+            background: '#7f1d1d', color: '#fecaca', padding: '0.75rem 1rem',
             borderRadius: '8px', fontSize: '0.875rem', marginBottom: '1.25rem'
           }}>
             {error}
@@ -108,13 +90,13 @@ export default function EditLeadPage() {
 
         <div style={{ display: 'grid', gap: '1.1rem' }}>
           <div>
-            <label style={labelStyle} htmlFor="name">Name <span style={{ color: '#ef4444' }}>*</span></label>
+            <label style={labelStyle} htmlFor="name">Name <span style={{ color: colors.danger }}>*</span></label>
             <input id="name" name="name" value={form.name} onChange={handleChange}
               placeholder="Jane Smith" style={inputStyle} />
           </div>
 
           <div>
-            <label style={labelStyle} htmlFor="email">Email <span style={{ color: '#ef4444' }}>*</span></label>
+            <label style={labelStyle} htmlFor="email">Email <span style={{ color: colors.danger }}>*</span></label>
             <input id="email" name="email" type="email" value={form.email} onChange={handleChange}
               placeholder="jane@example.com" style={inputStyle} />
           </div>
@@ -163,15 +145,15 @@ export default function EditLeadPage() {
 
         <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.5rem' }}>
           <button type="submit" disabled={submitting} style={{
-            background: '#1e40af', color: '#fff', padding: '0.7rem 1.5rem',
+            background: colors.primary, color: '#fff', padding: '0.7rem 1.5rem',
             border: 'none', borderRadius: '8px', fontWeight: 600, fontSize: '0.9rem',
             cursor: submitting ? 'not-allowed' : 'pointer', opacity: submitting ? 0.7 : 1,
           }}>
             {submitting ? 'Saving...' : 'Save Changes'}
           </button>
           <Link href="/leads" style={{
-            padding: '0.7rem 1.25rem', border: '1px solid #cbd5e1', borderRadius: '8px',
-            fontWeight: 600, fontSize: '0.9rem', color: '#475569', display: 'flex', alignItems: 'center'
+            padding: '0.7rem 1.25rem', border: `1px solid ${colors.border}`, borderRadius: '8px',
+            fontWeight: 600, fontSize: '0.9rem', color: colors.textMuted, display: 'flex', alignItems: 'center'
           }}>
             Cancel
           </Link>

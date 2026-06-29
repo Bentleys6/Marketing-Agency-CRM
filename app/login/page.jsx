@@ -6,11 +6,12 @@ import { loginAction } from './actions'
 const inputStyle = {
   width: '100%',
   padding: '0.7rem 0.9rem',
-  border: '1px solid #cbd5e1',
+  border: '1px solid #2c2340',
   borderRadius: '8px',
   fontSize: '0.95rem',
   outline: 'none',
-  background: '#fff',
+  background: '#1d1530',
+  color: '#f4f1fa',
 }
 
 export default function LoginPage() {
@@ -19,23 +20,23 @@ export default function LoginPage() {
   return (
     <div style={{
       minHeight: '100vh', display: 'flex', alignItems: 'center',
-      justifyContent: 'center', background: '#f8fafc',
+      justifyContent: 'center', background: '#0b0710',
     }}>
       <div style={{
-        background: '#fff', borderRadius: '16px', border: '1px solid #e2e8f0',
+        background: '#150f20', borderRadius: '16px', border: '1px solid #2c2340',
         padding: '2.5rem', width: '100%', maxWidth: '400px',
-        boxShadow: '0 4px 24px rgba(0,0,0,0.06)',
+        boxShadow: '0 4px 24px rgba(0,0,0,0.4)',
       }}>
-        <h1 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.25rem' }}>
+        <h1 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.25rem', color: '#c084fc' }}>
           Agency CRM
         </h1>
-        <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '1.75rem' }}>
+        <p style={{ color: '#b3a4d4', fontSize: '0.9rem', marginBottom: '1.75rem' }}>
           Sign in to your account
         </p>
 
         {error && (
           <div style={{
-            background: '#fee2e2', color: '#991b1b', padding: '0.75rem 1rem',
+            background: '#7f1d1d', color: '#fecaca', padding: '0.75rem 1rem',
             borderRadius: '8px', fontSize: '0.875rem', marginBottom: '1.25rem',
           }}>
             {error}
@@ -44,7 +45,7 @@ export default function LoginPage() {
 
         <form action={formAction} style={{ display: 'grid', gap: '1rem' }}>
           <div>
-            <label style={{ display: 'block', fontWeight: 600, fontSize: '0.85rem', marginBottom: '0.4rem' }}>
+            <label style={{ display: 'block', fontWeight: 600, fontSize: '0.85rem', marginBottom: '0.4rem', color: '#b3a4d4' }}>
               Email
             </label>
             <input
@@ -53,7 +54,7 @@ export default function LoginPage() {
             />
           </div>
           <div>
-            <label style={{ display: 'block', fontWeight: 600, fontSize: '0.85rem', marginBottom: '0.4rem' }}>
+            <label style={{ display: 'block', fontWeight: 600, fontSize: '0.85rem', marginBottom: '0.4rem', color: '#b3a4d4' }}>
               Password
             </label>
             <input
@@ -62,7 +63,7 @@ export default function LoginPage() {
             />
           </div>
           <button type="submit" disabled={pending} style={{
-            background: '#1e40af', color: '#fff', padding: '0.75rem',
+            background: '#9333ea', color: '#fff', padding: '0.75rem',
             border: 'none', borderRadius: '8px', fontWeight: 600, fontSize: '0.95rem',
             cursor: pending ? 'not-allowed' : 'pointer', opacity: pending ? 0.7 : 1,
             marginTop: '0.25rem',

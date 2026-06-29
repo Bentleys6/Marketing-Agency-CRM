@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { STATUSES, STATUS_COLORS, TEAM_MEMBERS } from '@/lib/leadStatus'
+import { colors, pillStyle } from '@/lib/theme'
 
 function formatCurrency(amount) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount)
@@ -49,7 +50,7 @@ export default function BoardPage() {
     <div>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
         <div>
-          <Link href="/leads" style={{ color: '#64748b', fontSize: '0.85rem' }}>← Back to Leads</Link>
+          <Link href="/leads" style={{ color: colors.textMuted, fontSize: '0.85rem' }}>← Back to Leads</Link>
           <h1 style={{ fontSize: '1.5rem', fontWeight: 700, marginTop: '0.5rem' }}>Leads Board</h1>
         </div>
       </div>
@@ -60,16 +61,7 @@ export default function BoardPage() {
             <button
               key={member}
               onClick={() => setActiveMember(member)}
-              style={{
-                background: activeMember === member ? '#0f172a' : '#fff',
-                color: activeMember === member ? '#fff' : '#475569',
-                border: '1px solid ' + (activeMember === member ? '#0f172a' : '#cbd5e1'),
-                padding: '0.4rem 0.9rem',
-                borderRadius: '999px',
-                fontWeight: 600,
-                fontSize: '0.82rem',
-                cursor: 'pointer',
-              }}
+              style={pillStyle(activeMember === member)}
             >
               {member}
             </button>
@@ -83,16 +75,7 @@ export default function BoardPage() {
             <button
               key={tag}
               onClick={() => setActiveTag(tag)}
-              style={{
-                background: activeTag === tag ? '#1e40af' : '#fff',
-                color: activeTag === tag ? '#fff' : '#475569',
-                border: '1px solid ' + (activeTag === tag ? '#1e40af' : '#cbd5e1'),
-                padding: '0.4rem 0.9rem',
-                borderRadius: '999px',
-                fontWeight: 600,
-                fontSize: '0.82rem',
-                cursor: 'pointer',
-              }}
+              style={pillStyle(activeTag === tag)}
             >
               {tag}
             </button>
@@ -101,7 +84,7 @@ export default function BoardPage() {
       )}
 
       {loading ? (
-        <p style={{ color: '#94a3b8' }}>Loading...</p>
+        <p style={{ color: colors.textFaint }}>Loading...</p>
       ) : (
         <div style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '1rem' }}>
           {STATUSES.map(status => {
@@ -116,8 +99,8 @@ export default function BoardPage() {
                 onDragLeave={() => setDragOverStatus(prev => (prev === status ? null : prev))}
                 onDrop={e => handleDrop(e, status)}
                 style={{
-                  background: isOver ? '#eff6ff' : '#f8fafc',
-                  border: isOver ? '1px solid #93c5fd' : '1px solid #e2e8f0',
+                  background: isOver ? colors.surfaceAlt : colors.surface,
+                  border: isOver ? `1px solid ${colors.primary}` : `1px solid ${colors.border}`,
                   borderRadius: '12px',
                   minWidth: '260px',
                   width: '260px',
@@ -127,7 +110,7 @@ export default function BoardPage() {
                   maxHeight: 'calc(100vh - 180px)',
                 }}
               >
-                <div style={{ padding: '0.9rem 1rem 0.6rem', borderBottom: '1px solid #e2e8f0' }}>
+                <div style={{ padding: '0.9rem 1rem 0.6rem', borderBottom: `1px solid ${colors.border}` }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <span style={{
                       background: badge.bg, color: badge.color,
@@ -136,10 +119,10 @@ export default function BoardPage() {
                     }}>
                       {status}
                     </span>
-                    <span style={{ color: '#94a3b8', fontSize: '0.8rem', fontWeight: 600 }}>{columnLeads.length}</span>
+                    <span style={{ color: colors.textFaint, fontSize: '0.8rem', fontWeight: 600 }}>{columnLeads.length}</span>
                   </div>
                   {columnRevenue > 0 && (
-                    <p style={{ color: '#64748b', fontSize: '0.78rem', marginTop: '0.35rem' }}>
+                    <p style={{ color: colors.textMuted, fontSize: '0.78rem', marginTop: '0.35rem' }}>
                       {formatCurrency(columnRevenue)}
                     </p>
                   )}
@@ -147,7 +130,7 @@ export default function BoardPage() {
 
                 <div style={{ padding: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.6rem', overflowY: 'auto' }}>
                   {columnLeads.length === 0 ? (
-                    <p style={{ color: '#cbd5e1', fontSize: '0.8rem', textAlign: 'center', padding: '1rem 0' }}>No leads</p>
+                    <p style={{ color: colors.textFaint, fontSize: '0.8rem', textAlign: 'center', padding: '1rem 0' }}>No leads</p>
                   ) : columnLeads.map(lead => (
                     <div
                       key={lead.id}
@@ -155,8 +138,8 @@ export default function BoardPage() {
                       onDragStart={() => setDragId(lead.id)}
                       onDragEnd={() => setDragId(null)}
                       style={{
-                        background: '#fff',
-                        border: '1px solid #e2e8f0',
+                        background: colors.surfaceAlt,
+                        border: `1px solid ${colors.border}`,
                         borderRadius: '8px',
                         padding: '0.7rem 0.8rem',
                         cursor: 'grab',
@@ -165,14 +148,14 @@ export default function BoardPage() {
                     >
                       <p style={{ fontWeight: 600, fontSize: '0.88rem', marginBottom: '0.2rem' }}>{lead.name}</p>
                       {lead.company && (
-                        <p style={{ color: '#64748b', fontSize: '0.78rem', marginBottom: '0.2rem' }}>{lead.company}</p>
+                        <p style={{ color: colors.textMuted, fontSize: '0.78rem', marginBottom: '0.2rem' }}>{lead.company}</p>
                       )}
-                      <p style={{ color: '#94a3b8', fontSize: '0.76rem' }}>{lead.email}</p>
+                      <p style={{ color: colors.textFaint, fontSize: '0.76rem' }}>{lead.email}</p>
                       {(lead.tag || lead.assigned_to) && (
                         <div style={{ display: 'flex', gap: '0.3rem', marginTop: '0.3rem', flexWrap: 'wrap' }}>
                           {lead.tag && (
                             <span style={{
-                              background: '#f1f5f9', color: '#475569',
+                              background: colors.surface, color: colors.textMuted,
                               padding: '0.1rem 0.5rem', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 600,
                             }}>
                               {lead.tag}
@@ -180,7 +163,7 @@ export default function BoardPage() {
                           )}
                           {lead.assigned_to && (
                             <span style={{
-                              background: '#e0e7ff', color: '#3730a3',
+                              background: '#312e81', color: '#c7d2fe',
                               padding: '0.1rem 0.5rem', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 600,
                             }}>
                               {lead.assigned_to}
@@ -189,12 +172,12 @@ export default function BoardPage() {
                         </div>
                       )}
                       {Number(lead.revenue) > 0 && (
-                        <p style={{ color: '#166534', fontSize: '0.78rem', fontWeight: 600, marginTop: '0.3rem' }}>
+                        <p style={{ color: colors.success, fontSize: '0.78rem', fontWeight: 600, marginTop: '0.3rem' }}>
                           {formatCurrency(lead.revenue)}
                         </p>
                       )}
                       <Link href={`/leads/${lead.id}/edit`} style={{
-                        color: '#1e40af', fontWeight: 600, fontSize: '0.76rem', marginTop: '0.4rem', display: 'inline-block',
+                        color: colors.primaryLight, fontWeight: 600, fontSize: '0.76rem', marginTop: '0.4rem', display: 'inline-block',
                       }}>
                         Edit
                       </Link>
